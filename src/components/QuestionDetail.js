@@ -13,7 +13,6 @@ const QuestionDetail = ({question, handleRetrieveQuestionDetail}) => {
 
         const id = params.question_id;
         handleRetrieveQuestionDetail(id);
-
     }, []);
 
     return (<Container>

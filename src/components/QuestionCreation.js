@@ -13,7 +13,7 @@ const SubtitleTypography = styled(Typography)({
     fontSize: '14px'
 })
 
-const QuestionCreation = ({handleSaveQuestion}) => {
+const QuestionCreation = ({user, handleSaveQuestion}) => {
 
     const optionOneRef = React.useRef();
     const optionTwoRef = React.useRef();
@@ -26,7 +26,9 @@ const QuestionCreation = ({handleSaveQuestion}) => {
         const optionTwo = optionTwoRef?.current?.value;
         if (!!optionOne && !!optionTwo) {
             handleSaveQuestion({
-
+                optionOneText: optionOne,
+                optionTwoText: optionTwo,
+                author: user?.id
             });
         }
     }
