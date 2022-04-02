@@ -7,6 +7,7 @@ import {handleRetrieveQuestions} from '../actions/questions';
 import QuestionCard from './elements/QuestionCard';
 
 const Dashboard = ({
+    authedUser,
     questions,
     answeredQuestionIds,
     handleRetrieveQuestions
@@ -14,13 +15,13 @@ const Dashboard = ({
 
     React.useEffect(() => {
         handleRetrieveQuestions();
-    }, [])
+    }, [authedUser])
 
 
     const unansweredQuestions = (Object.keys(questions ?? []))
         .filter((item) => !answeredQuestionIds?.includes(item))?.map(item => questions[item]);
     const answeredQuestions = (Object.keys(questions ?? []))
-        .filter((item) => answeredQuestionIds?.includes(item.id))?.map(item => questions[item]);
+        .filter((item) => answeredQuestionIds?.includes(item))?.map(item => questions[item]);
 
     return (<Container>
         <h2>Dashboard</h2>
@@ -45,9 +46,10 @@ const Dashboard = ({
 
 
 
-const mapStateToProps = ({questions}) => ({
+const mapStateToProps = ({auth, questions}) => ({
+    authedUser: auth?.authedUser ?? null,
     questions: questions?.questions ?? [],
-    answeredQuestionIds: questions?.answeredQuestionIds
+    answeredQuestionIds: questions?.answeredQuestionIds,
 });
 
 const mapDispatchToProps = (dispatch) => ({

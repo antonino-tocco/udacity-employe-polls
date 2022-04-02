@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Container, ThemeProvider} from '@mui/material';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router';
-import {retrieveLoggedUser} from '../actions/auth';
+import {retrieveAuthedUser} from '../actions/auth';
 
 import Dashboard from './Dashboard';
 import Login from './Login';
@@ -14,6 +14,7 @@ import PrivateRoute from './PrivateRoute';
 import Leaderboard from './Leaderboard';
 import QuestionDetail from './QuestionDetail';
 import QuestionCreation from './QuestionCreation';
+import {SAVE_QUESTION_ANSWER} from "../actions/answers";
 
 
 const routes = [{
@@ -54,21 +55,35 @@ const routes = [{
 }]
 
 const App = ({
-    retrieveLoggedUser
+    isUserLogged,
+    authedUser,
+    savedQuestion,
+    savedQuestionAnswer,
+    refreshAuthedUser,
 })  => {
 
     React.useEffect(() => {
-        retrieveLoggedUser();
+        refreshAuthedUser();
     }, []);
+
+
+    React.useEffect(() => {
+        if (!!savedQuestionAnswer || !!savedQuestion) {
+            refreshAuthedUser();
+        }
+    }, [savedQuestionAnswer, savedQuestion])
 
     return (
         <ThemeProvider theme={theme}>
             <Router>
-                <NavHeader pages={routes?.filter((item) => !!item.showInMenu)}/>
+                <NavHeader
+                    isUserLogged={isUserLogged} authedUser={authedUser}
+                    pages={routes?.filter((item) => !!item.showInMenu)}/>
                 <Routes>
                     {routes?.map((item) => (
                             item?.private ?
-                                <Route path={item?.path} element={<PrivateRoute />}>
+                                <Route path={item?.path} element={<PrivateRoute
+                                        isUserLogged={isUserLogged} authedUser={authedUser}/>}>
                                     <Route key={item?.key}
                                            path={item?.path}
                                            element={item.builder()}/>
@@ -84,8 +99,15 @@ const App = ({
     );
 }
 
+const mapStateToProps = ({auth, questions, answers}) => ({
+    isUserLogged: !!auth?.authedUser,
+    authedUser: auth?.authedUser,
+    savedQuestion: questions.savedQuestion,
+    savedQuestionAnswer: answers.savedQuestionAnswer
+})
+
 const mapDispatchToProps = (dispatch) => ({
-    retrieveLoggedUser: async () => dispatch(await retrieveLoggedUser())
+    refreshAuthedUser: async () => dispatch(await retrieveAuthedUser())
 });
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

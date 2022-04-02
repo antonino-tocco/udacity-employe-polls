@@ -1,7 +1,10 @@
-import {retrieveQuestion, retrieveQuestions} from '../utils/api';
+import {retrieveQuestion, retrieveQuestions, retrieveUser, saveQuestion, saveQuestionAnswer} from '../utils/api';
 
 export const SET_QUESTIONS = "SET_QUESTIONS";
 export const SET_SELECTED_QUESTION = "SET_SELECTED_QUESTION";
+export const SAVED_QUESTION = "SAVED_QUESTION";
+export const SAVE_QUESTION_ERROR = "SAVE_QUESTION_ERROR";
+
 
 export function setQuestions({questions, answeredQuestionIds}) {
     return {
@@ -20,8 +23,9 @@ export function setSelectedQuestion({question}) {
 
 export async function handleRetrieveQuestions() {
     return async (dispatch, getState) => {
-        const { loggedUser } = getState();
-        const answeredQuestionIds = !!loggedUser ? Object.keys(loggedUser?.answers ?? []) : [];
+        const { auth } = getState();
+        const { authedUser } = auth;
+        const answeredQuestionIds = !!authedUser ? Object.keys(authedUser?.answers ?? []) : [];
         try {
             const questions = await retrieveQuestions();
             dispatch(setQuestions({
@@ -38,6 +42,11 @@ export async function handleRetrieveQuestionDetail(id) {
     return async (dispatch) => {
         try {
             const question = await retrieveQuestion(id);
+            const author = await retrieveUser(question.author);
+            if (!!author) {
+                delete author.password;
+            }
+            question.authorDetail = author;
             dispatch(setSelectedQuestion({
                 question
             }));
@@ -50,9 +59,16 @@ export async function handleRetrieveQuestionDetail(id) {
 export async function handleSaveQuestion(question) {
     return async (dispatch) => {
         try {
-
+            const storedQuestion = await saveQuestion(question);
+            dispatch({
+                type: SAVED_QUESTION,
+                savedQuestion: storedQuestion?.id
+            });
         } catch (exception) {
-
+            dispatch({
+               type: SAVE_QUESTION_ERROR,
+            });
         }
     }
 }
+

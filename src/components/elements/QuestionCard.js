@@ -1,4 +1,4 @@
-import {Button, Card, CardActions, CardContent, CardHeader} from "@mui/material";
+import {Box, Button, Card, CardActions, CardContent, CardHeader} from "@mui/material";
 import {useNavigate} from 'react-router';
 import {DateTime} from 'luxon';
 
@@ -18,7 +18,9 @@ const QuestionCard = ({question}) => {
             <span>{DateTime.fromMillis(question?.timestamp).toFormat('dd-MM-yyyy | HH:mm:ss')}</span><br />
         </CardContent>
         <CardActions>
-            <Button onClick={goToQuestionDetail}>SHOW</Button>
+            <Box sx={{display: 'flex', flexGrow: 1, flexDirection: 'horizontal', justifyContent: 'center'}}>
+                <Button sx={{width: '100%'}} variant='outlined' onClick={goToQuestionDetail}>SHOW</Button>
+            </Box>
         </CardActions>
     </Card>);
 }

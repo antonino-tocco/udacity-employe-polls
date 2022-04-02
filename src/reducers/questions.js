@@ -1,4 +1,4 @@
-import {SET_QUESTIONS, SET_SELECTED_QUESTION} from '../actions/questions';
+import {SAVED_QUESTION, SET_QUESTIONS, SET_SELECTED_QUESTION} from '../actions/questions';
 
 export default function questions(state = {}, action) {
     switch (action.type) {
@@ -10,6 +10,10 @@ export default function questions(state = {}, action) {
         case SET_SELECTED_QUESTION:
             return {
                 selectedQuestion: action.question
+            }
+        case SAVED_QUESTION:
+            return {
+                savedQuestion: action.savedQuestion
             }
         default:
             return state;

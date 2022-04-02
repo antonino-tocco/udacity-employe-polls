@@ -13,8 +13,16 @@ const Leaderboard = ({users, retrieveAllUsers}) => {
     }, []);
 
     const columns = [{
-        name: 'name',
-        label: 'name'
+        name: 'id',
+        label: 'name',
+        customBodyRenderLite: (dataIndex, rowIndex) => {
+            console.log(dataIndex);
+            console.log(rowIndex);
+            return null;
+        },
+        options: {
+            sort: false
+        }
     }, {
         name: 'answeredQuestions',
         label: 'answered questions'
@@ -22,13 +30,22 @@ const Leaderboard = ({users, retrieveAllUsers}) => {
         name: 'askedQuestions',
         label: 'asked questions'
     }];
+
+    const options = {
+        customSort: (data, colIndex, order) => data.sort((a, b) => ((a['answeredQuestions'] +  a['askedQuestions']) - (b['answeredQuestions'] + b ['askedQuestions'])))
+    }
+
+    const hasUsers = !!users && users.length > 0;
     
     return (<Container>
         <h2>Leaderboard</h2>
-        <MUIDataTable
-            title={'Leaderboard'}
-            columns={columns}
-            data={users}/>
+        {!!hasUsers &&
+            <MUIDataTable
+                title={'Leaderboard'}
+                options={options}
+                columns={columns}
+                data={users}/>
+        }
     </Container>);
 };
 

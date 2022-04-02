@@ -13,7 +13,7 @@ const SubtitleTypography = styled(Typography)({
     fontSize: '14px'
 })
 
-const QuestionCreation = ({user, handleSaveQuestion}) => {
+const QuestionCreation = ({authedUser, handleSaveQuestion}) => {
 
     const optionOneRef = React.useRef();
     const optionTwoRef = React.useRef();
@@ -22,13 +22,13 @@ const QuestionCreation = ({user, handleSaveQuestion}) => {
     const [optionTwoError, setOptionTwoError] = React.useState(false);
 
     const _handleSaveQuestion = () => {
-        const optionOne = optionOneRef?.current?.value;
-        const optionTwo = optionTwoRef?.current?.value;
+        const optionOne = optionOneRef?.current?.textContent;
+        const optionTwo = optionTwoRef?.current?.textContent;
         if (!!optionOne && !!optionTwo) {
             handleSaveQuestion({
                 optionOneText: optionOne,
                 optionTwoText: optionTwo,
-                author: user?.id
+                author: authedUser?.id
             });
         }
     }
@@ -79,12 +79,12 @@ const QuestionCreation = ({user, handleSaveQuestion}) => {
     </Container>;
 };
 
-const mapStateToProps = ({}) => ({
-
+const mapStateToProps = ({auth}) => ({
+    authedUser: auth?.authedUser ?? null
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    handleSaveQuestion: async (question) => await dispatch(handleSaveQuestion(question))
+    handleSaveQuestion: async (question) => dispatch(await handleSaveQuestion(question))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuestionCreation);

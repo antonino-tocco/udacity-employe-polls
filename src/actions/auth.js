@@ -1,16 +1,20 @@
+import md5 from 'crypto-js/md5';
 import {retrieveUsers} from '../utils/api';
 import storage from '../utils/storage';
 
-export const USER_LOGGED = 'USER_LOGGED';
+export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const USER_LOGIN_FAILED = 'USER_LOGIN_FAILED';
 
-export function userLogged(user) {
-    const toStoreUser = {...user};
-    delete toStoreUser['password'];
-    storage.setItem('user_logged', JSON.stringify(toStoreUser));
+export function setCurrentUser(user) {
+    const toStoreUser = user;
+    if (!!toStoreUser) {
+        delete toStoreUser['password'];
+    }
+    storage.setItem('user', JSON.stringify(toStoreUser));
+
     return {
-        type: USER_LOGGED,
-        id: user.id
+        type: SET_CURRENT_USER,
+        user: toStoreUser
     }
 }
 
@@ -21,15 +25,13 @@ export function userLoginFailed(reason) {
     }
 }
 
-export async function retrieveLoggedUser() {
+export async function retrieveAuthedUser() {
     return async (dispatch) => {
-        const storedUser = JSON.parse(storage.getItem('user_logged'));
+        const storedUser = JSON.parse(storage.getItem('user'));
         try {
             const users = await retrieveUsers();
             const user = users[storedUser?.id];
-            if (!user) {
-                dispatch(userLogged(user));
-            }
+            dispatch(setCurrentUser(user));
         } catch (exception) {
 
         }
@@ -54,9 +56,22 @@ export async function handleLoginUser(id, password) {
                 dispatch(userLoginFailed());
                 return;
             }
-            dispatch(userLogged(user));
+            const avatarURL = `https://www.gravatar.com/avatar/${md5(JSON.stringify(user))}`;
+            user.avatarURL = avatarURL;
+            dispatch(setCurrentUser(user));
         } catch (exception) {
             dispatch(userLoginFailed(exception));
+        }
+    }
+}
+
+export function handleLogout() {
+    return (dispatch) => {
+        try {
+            storage.removeItem('user');
+            dispatch(setCurrentUser(null));
+        } catch (exception) {
+
         }
     }
 }

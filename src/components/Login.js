@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {useNavigate} from 'react-router';
 
 import {
+    Box,
     Button,
     Container,
     FormGroup,
@@ -12,14 +13,21 @@ import {
 } from '@mui/material';
 
 import styled from 'styled-components';
+import pollIcon from '../assets/images/polling.png';
 
 import {handleLoginUser} from '../actions/auth';
 
 const PaddedDiv = styled.div({
     padding: '40px 20px'
+});
+
+const LoginIcon = styled.img({
+    width: 200,
+    display: 'block',
+    margin: '0 auto'
 })
 
-const Login = ({loggedUser, handleUserLogin}) => {
+const Login = ({authedUser, handleUserLogin}) => {
 
     const [username, setUsername] = React.useState(null);
     const [password, setPassword] = React.useState(null);
@@ -31,15 +39,16 @@ const Login = ({loggedUser, handleUserLogin}) => {
     }
 
     React.useEffect(() => {
-        if (!!loggedUser) {
+        if (!!authedUser) {
             navigate('/');
         }
-    }, [loggedUser]);
+    }, [authedUser]);
 
     return (<Container>
         <h2>Login</h2>
         <Paper>
             <PaddedDiv>
+                <LoginIcon src={pollIcon} />
                 <FormGroup>
                     <TextField
                         variant='standard'
@@ -56,14 +65,16 @@ const Login = ({loggedUser, handleUserLogin}) => {
                         hint={'Password'}
                         helperText={'Password'}/>
                 </FormGroup>
-                <Button type='submit' variant='contained' onClick={handleSubmit}>Login</Button>
+                <Box sx={{display: 'flex', flexDirection: 'horizontal', justifyContent: 'center'}}>
+                    <Button type='submit' variant='contained' onClick={handleSubmit}>Login</Button>
+                </Box>
             </PaddedDiv>
         </Paper>
     </Container>);
 }
 
-const mapStateToProps = state => ({
-    loggedUser: state.users.loggedUser
+const mapStateToProps = ({auth}) => ({
+    authedUser: auth.authedUser
 });
 
 const mapDispatchToProps = (dispatch) => ({

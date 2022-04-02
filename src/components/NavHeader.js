@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {connect} from 'react-redux';
 import {
-    AppBar,
+    AppBar, Avatar,
     Box,
     Button,
     Container,
@@ -17,15 +17,18 @@ import {
 import {
     Menu as MenuIcon
 } from '@mui/icons-material';
-import {useNavigate} from "react-router";
+import {useNavigate} from 'react-router';
+
+import {handleLogout} from '../actions/auth';
 
 const MenuButton = styled(Button)({
     color: '#fff'
 })
 
 
-const NavHeader = ({isUserLogged, loggedUser, pages}) => {
+const NavHeader = ({isUserLogged, authedUser, pages, handleLogout}) => {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
+    const [anchorElUserNav, setAnchorElUserNav] = React.useState(null);
 
     const navigate = useNavigate();
 
@@ -37,49 +40,52 @@ const NavHeader = ({isUserLogged, loggedUser, pages}) => {
         setAnchorElNav(null);
     }
 
-    const navigateToPage = (page) => {
-        navigate(page?.path);
+    const _handleLogout = () => {
+
     }
 
-    return (<AppBar position='sticky'>
+    const navigateToPage = (page) => {
+        navigate(page?.path);
+        handleCloseNavMenu();
+    }
+
+    return (isUserLogged ? <AppBar position='sticky'>
         <Toolbar variant='dense'>
             <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
-                <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                    <IconButton
-                        size="large"
-                        aria-label="account of current user"
-                        aria-controls="menu-appbar"
-                        aria-haspopup="true"
-                        onClick={handleOpenNavMenu}
-                        color="inherit"
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Menu
-                        id="menu-appbar"
-                        anchorEl={anchorElNav}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'left',
-                        }}
-                        keepMounted
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'left',
-                        }}
-                        open={Boolean(anchorElNav)}
-                        onClose={handleCloseNavMenu}
-                        sx={{
-                            display: { xs: 'block', md: 'none' },
-                        }}
-                    >
-                        {pages.map((item) => (
-                            <MenuItem key={item?.key} onClick={handleCloseNavMenu}>
-                                <Typography textAlign="center">{item?.label}</Typography>
-                            </MenuItem>
-                        ))}
-                    </Menu>
-                </Box>
+                <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleOpenNavMenu}
+                    color="inherit"
+                >
+                    <MenuIcon />
+                </IconButton>
+                <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorElNav}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                    open={Boolean(anchorElNav)}
+                    onClose={handleCloseNavMenu}
+                    sx={{
+                        display: { xs: 'block', md: 'none' },
+                    }}
+                >
+                    {pages.map((item) => (
+                        <MenuItem key={item?.key} onClick={() => navigateToPage(item)}>
+                            <Typography textAlign="center">{item?.label}</Typography>
+                        </MenuItem>
+                    ))}
+                </Menu>
             </Box>
             <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                 {pages?.map((item) => (
@@ -88,16 +94,34 @@ const NavHeader = ({isUserLogged, loggedUser, pages}) => {
                     </MenuButton>)
                 )}
             </Box>
+            <Box sx={{flexGrow: 0}}>
+                <IconButton>
+                    <Avatar src={authedUser?.avatarURL}/>
+                </IconButton>
+                <Menu
+                    id='menu-appbar'
+                    anchorEl={anchorElUserNav}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right'
+                    }}
+                    open={Boolean(anchorElUserNav)}
+                    transformOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}>
+                    <MenuItem key='logout' onClick={() => _handleLogout()}>
+                        <Typography textALign='center'>Logout</Typography>
+                    </MenuItem>
+                </Menu>
+            </Box>
         </Toolbar>
 
-    </AppBar>);
+    </AppBar> : null);
 };
 
-const mapStateToProps = ({users}) => ({
-    isUserLogged: !!users.loggedUser,
-    loggedUser: users?.loggedUser ?? null
-});
+const mapDispatchToProps = (dispatch) => ({
+    handleLogout: () => dispatch(handleLogout())
+})
 
-const mapDispatchToProps = ({}) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavHeader);
+export default connect(null, mapDispatchToProps)(NavHeader);
