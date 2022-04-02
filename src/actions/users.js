@@ -1,62 +1,30 @@
 import {retrieveUsers} from '../utils/api';
-import storage from '../utils/storage';
 
-export const USER_LOGGED = 'USER_LOGGED';
-export const USER_LOGIN_FAILED = 'USER_LOGIN_FAILED';
+export const SET_USER_LIST = 'SET_USER_LIST';
 
-export function userLogged(user) {
-    const toStoreUser = {...user};
-    delete toStoreUser['password'];
-    storage.setItem('user_logged', JSON.stringify(toStoreUser));
+export function setUserList(users) {
     return {
-        type: USER_LOGGED,
-        id: user.id
+        type: SET_USER_LIST,
+        users
     }
 }
 
-export function userLoginFailed(reason) {
-    return {
-        type: USER_LOGIN_FAILED,
-        reason
-    }
-}
-
-export async function retrieveLoggedUser() {
+export async function retrieveAllUsers() {
     return async (dispatch) => {
-        const storedUser = JSON.parse(storage.getItem('user_logged'));
+        const users = await retrieveUsers();
         try {
-            const users = await retrieveUsers();
-            const user = users[storedUser?.id];
-            if (!user) {
-                dispatch(userLogged(user));
-            }
+            const mappedUsers = Object.keys(users)?.map((item) => {
+                const user = users[item];
+                return {
+                    name: user?.name,
+                    username: user?.id,
+                    answeredQuestions: Object.keys(user?.answers)?.length,
+                    askedQuestions: user?.questions?.length
+                }});
+            dispatch(setUserList(mappedUsers));
         } catch (exception) {
 
         }
     }
 }
 
-export async function handleLoginUser(id, password) {
-    return async (dispatch, getState) => {
-        try {
-            const users = await retrieveUsers();
-            const user = users[id];
-            //TODO ADD LOGIN FAILED REASON
-            if (!user) {
-                dispatch(userLoginFailed());
-                return;
-            }
-            if (user.id !== id) {
-                dispatch(userLoginFailed());
-                return;
-            }
-            if (user.password !== password) {
-                dispatch(userLoginFailed());
-                return;
-            }
-            dispatch(userLogged(user));
-        } catch (exception) {
-            dispatch(userLoginFailed(exception));
-        }
-    }
-}

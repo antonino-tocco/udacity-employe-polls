@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Container, ThemeProvider} from '@mui/material';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router';
-import {retrieveLoggedUser} from '../actions/users';
+import {retrieveLoggedUser} from '../actions/auth';
 
 import Dashboard from './Dashboard';
 import Login from './Login';

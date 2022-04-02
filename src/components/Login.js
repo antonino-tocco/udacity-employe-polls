@@ -13,7 +13,7 @@ import {
 
 import styled from 'styled-components';
 
-import {handleLoginUser} from '../actions/users';
+import {handleLoginUser} from '../actions/auth';
 
 const PaddedDiv = styled.div({
     padding: '40px 20px'

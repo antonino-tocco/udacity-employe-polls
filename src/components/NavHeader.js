@@ -83,7 +83,7 @@ const NavHeader = ({isUserLogged, loggedUser, pages}) => {
             </Box>
             <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                 {pages?.map((item) => (
-                    <MenuButton variant='text' onClick={() => navigateToPage(item)}>
+                    <MenuButton key={item.key} variant='text' onClick={() => navigateToPage(item)}>
                         <Typography textAlign='center'>{item.label}</Typography>
                     </MenuButton>)
                 )}
