@@ -1,5 +1,14 @@
 import {_getQuestions, _getUsers, _saveQuestion, _saveQuestionAnswer} from './_DATA';
 
+import errors from './errors';
+
+export class ApiError extends Error {
+    constructor(errorCode, errorMessage) {
+        super(errorMessage);
+        this.errorCode = errorCode;
+    }
+}
+
 export async function retrieveUsers() {
     try {
         return await _getUsers();
@@ -12,6 +21,21 @@ export async function retrieveUser(id) {
     try {
         const users = await _getUsers();
         return users[id] ?? null;
+    } catch (exception) {
+        throw exception;
+    }
+}
+
+export async function loginUser(username, password) {
+    try {
+        const user = retrieveUser(username);
+        if (!user) {
+            throw new ApiError(errors.USER_NOT_FOUND, 'User not found');
+        }
+        if (user?.password !== password) {
+            throw new ApiError(errors.PASSWORD_NOT_MATCH, 'Password don\'t match');
+        }
+        return user;
     } catch (exception) {
         throw exception;
     }
@@ -31,7 +55,7 @@ export async function retrieveQuestion(id) {
         if (!!questions && !!questions[id]) {
             return questions[id];
         }
-        return null;
+        throw new ApiError(errors.QUESTION_NOT_FOUND, 'Question not found');
     } catch (exception) {
         throw exception;
     }
@@ -47,7 +71,7 @@ export async function saveQuestion(question) {
 
 export async function saveQuestionAnswer({authedUser, qid, answer}) {
     try {
-        await _saveQuestionAnswer({authedUser, qid, answer});
+        return await _saveQuestionAnswer({authedUser, qid, answer});
     } catch (exception) {
         throw exception;
     }
