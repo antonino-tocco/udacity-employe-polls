@@ -21,28 +21,28 @@ const routes = [{
     key: 'dashboard',
     label: 'Home',
     path: '/',
-    private: false,
+    private: true,
     showInMenu: true,
     builder: (props) => <Dashboard {...props} />
 }, {
     key: 'leaderboard',
     label: 'Leaderboard',
     path: '/leaderboard',
-    private: false,
+    private: true,
     showInMenu: true,
     builder: (props) => <Leaderboard {...props} />
 }, {
     key: 'questions',
     label: 'Question',
     path: '/questions/:question_id',
-    private: false,
+    private: true,
     showInMenu: false,
     builder: (props) => <QuestionDetail {...props} />
 }, {
     key: 'new_question',
     label: 'New',
     path: '/add',
-    private: false,
+    private: true,
     showInMenu: true,
     builder: (props) => <QuestionCreation {...props} />
 }, {
