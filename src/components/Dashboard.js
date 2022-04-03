@@ -1,8 +1,9 @@
 import * as React from 'react';
 
 import {connect} from 'react-redux';
-
+import {useNavigate} from 'react-router';
 import {Card, CardHeader, Container, Grid} from '@mui/material';
+
 import {handleRetrieveQuestions} from '../actions/questions';
 import QuestionCard from './elements/QuestionCard';
 
@@ -13,9 +14,11 @@ const Dashboard = ({
     handleRetrieveQuestions
 }) => {
 
+    const navigate = useNavigate();
+
     React.useEffect(() => {
         handleRetrieveQuestions();
-    }, [authedUser])
+    }, [authedUser]);
 
 
     const unansweredQuestions = (Object.keys(questions ?? []))
@@ -29,7 +32,9 @@ const Dashboard = ({
         <Grid container spacing={2}>
             {unansweredQuestions.map((item) => (
                 <Grid key={item.id}  item xs={4}>
-                    <QuestionCard question={item}/>
+                    <QuestionCard
+                        navigate={navigate}
+                        question={item}/>
                 </Grid>
             ))}
         </Grid>
@@ -37,7 +42,9 @@ const Dashboard = ({
         <Grid container spacing={2}>
             {answeredQuestions.map((item) => (
                 <Grid key={item.id} item xs={4}>
-                    <QuestionCard question={item}/>
+                    <QuestionCard
+                        navigate={navigate}
+                        question={item}/>
                 </Grid>
             ))}
         </Grid>
