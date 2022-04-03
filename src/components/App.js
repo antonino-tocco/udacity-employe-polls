@@ -82,7 +82,8 @@ const App = ({
                 <Routes>
                     {routes?.map((item) => (
                             item?.private ?
-                                <Route path={item?.path} element={<PrivateRoute
+                                <Route key={item?.key}
+                                    path={item?.path} element={<PrivateRoute
                                         isUserLogged={isUserLogged} authedUser={authedUser}/>}>
                                     <Route key={item?.key}
                                            path={item?.path}

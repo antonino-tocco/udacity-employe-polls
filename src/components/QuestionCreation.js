@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {Box, Button, Container, FormGroup, styled, TextField, Typography} from '@mui/material';
 
-import { handleSaveQuestion } from '../actions/questions';
+import {handleSaveQuestion} from '../actions/questions';
 
 const TitleTypography = styled(Typography)({
     fontSize: '16px'
@@ -11,7 +11,11 @@ const TitleTypography = styled(Typography)({
 
 const SubtitleTypography = styled(Typography)({
     fontSize: '14px'
-})
+});
+
+const PaddedBox = styled(Box)({
+    padding: 40
+});
 
 const QuestionCreation = ({authedUser, handleSaveQuestion}) => {
 
@@ -46,31 +50,37 @@ const QuestionCreation = ({authedUser, handleSaveQuestion}) => {
     }
 
     return <Container>
-        <TitleTypography textAlign='center' variant='h4'>
-            Would You Rather
-        </TitleTypography>
-        <SubtitleTypography textAlign='center' variant='h5'>
-            Create your own poll
-        </SubtitleTypography>
-        <FormGroup>
-            <TextField
-                ref={optionOneRef}
-                helperText='Option One'
-                variant='standard'
-                name='optionOne'
-                onChange={handleChangeOptionOne}
-                error={optionOneError}
+        <PaddedBox>
+            <TitleTypography textAlign='center' variant='h4'>
+                Would You Rather
+            </TitleTypography>
+        </PaddedBox>
+        <PaddedBox>
+            <SubtitleTypography textAlign='center' variant='h5'>
+                Create your own poll
+            </SubtitleTypography>
+        </PaddedBox>
+        <PaddedBox>
+            <FormGroup>
+                <TextField
+                    ref={optionOneRef}
+                    helperText='Option One'
+                    variant='standard'
+                    name='optionOne'
+                    onChange={handleChangeOptionOne}
+                    error={optionOneError}
                 />
-        </FormGroup>
-        <FormGroup>
-            <TextField
-                ref={optionTwoRef}
-                helperText='Option Two'
-                variant='standard'
-                name='optionTwo'
-                onChange={handleChangeOptionTwo}
-                error={optionTwoError}/>
-        </FormGroup>
+            </FormGroup>
+            <FormGroup>
+                <TextField
+                    ref={optionTwoRef}
+                    helperText='Option Two'
+                    variant='standard'
+                    name='optionTwo'
+                    onChange={handleChangeOptionTwo}
+                    error={optionTwoError}/>
+            </FormGroup>
+        </PaddedBox>
         <Box sx={{display: 'flex', flexDirection: 'horizontal', flexGrow: 1, justifyContent: 'center'}}>
             <Button variant='text'
                     disabled={optionOneError || optionTwoError}
