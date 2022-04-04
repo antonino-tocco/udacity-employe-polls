@@ -18,7 +18,8 @@ export async function handleSaveQuestionAnswer({authedUser, qid, answer}) {
         } catch (exception) {
             dispatch({
                 type: SAVE_QUESTION_ANSWER_ERROR,
-                saveQuestionAnswer: null
+                saveQuestionAnswerError: exception.message,
+                savedQuestionAnswer: null
             })
         }
     }

@@ -27,7 +27,7 @@ describe('retrieveQuestions', () => {
            const questions = await api.retrieveQuestions();
            expect(questions).toBeInstanceOf(Array);
        } catch (exception) {
-           console.log(`Exception ${exception}`);
+
        }
     });
 });
@@ -56,7 +56,7 @@ describe('retrieveAllUsers', () => {
             const users = await api.retrieveUsers();
             expect(users).toBeInstanceOf(Array);
         } catch (exception) {
-            console.log(`Exception ${exception}`);
+
         }
     });
 });
@@ -71,13 +71,43 @@ describe('saveQuestion', () => {
             });
             expect(question).toExists('Question not saved');
         } catch (exception) {
-            console.log(`Exception ${exception}`);
+
         }
+    });
+
+    it('will retrieve an error for bad formatted question', async function () {
+       try {
+           const question = await api.saveQuestion({
+               optionOneText: 'Test1',
+               optionTwoText: 'Test2'
+           });
+       } catch (exception) {
+           expect(exception.errorCode).toBe(errors.QUESTION_BAD_FORMATTED)
+       }
     });
 });
 
 describe('saveQuestionAnswer', () => {
     it('will save question answer', async function () {
+        try {
+            const question = await api.saveQuestionAnswer({
+                authedUser: 'sarahedo',
+                qid: 'vthrdm985a262al8qx3do',
+                answer: 'optionOne'
+            });
+            expect(question).toExists('Question answer not saved');
+        } catch (exception) {
+        }
+    });
 
+    it('will retrieve an error for bad formatted question answer', async function () {
+        try {
+            await api.saveQuestionAnswer({
+                qid: 'vthrdm985a262al8qx3do',
+                answer: 'optionOne'
+            });
+        } catch (exception) {
+            expect(exception.errorCode).toBe(errors.ANSWER_BAD_FORMATTED)
+        }
     });
 });

@@ -36,16 +36,30 @@ const NavHeader = ({isUserLogged, authedUser, pages, handleLogout}) => {
         setAnchorElNav(event.target);
     }
 
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUserNav(event.target);
+    }
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     }
 
-    const _handleLogout = () => {
+    const handleCloseUserMenu = () => {
+        setAnchorElUserNav(null);
+    }
 
+    const _handleLogout = () => {
+        handleLogout();
     }
 
     const navigateToPage = (page) => {
-        navigate(page?.path);
+        if (page.key === 'question') {
+            navigate(page?.path, {state: {
+                fromNav: true
+            }});
+        } else {
+            navigate(page?.path);
+        }
         handleCloseNavMenu();
     }
 
@@ -95,7 +109,7 @@ const NavHeader = ({isUserLogged, authedUser, pages, handleLogout}) => {
                 )}
             </Box>
             <Box sx={{flexGrow: 0}}>
-                <IconButton>
+                <IconButton onClick={handleOpenUserMenu}>
                     <Avatar src={authedUser?.avatarURL}/>
                 </IconButton>
                 <Menu
@@ -111,7 +125,7 @@ const NavHeader = ({isUserLogged, authedUser, pages, handleLogout}) => {
                         horizontal: 'right',
                     }}>
                     <MenuItem key='logout' onClick={() => _handleLogout()}>
-                        <Typography textALign='center'>Logout</Typography>
+                        <Typography textAlign='center'>Logout</Typography>
                     </MenuItem>
                 </Menu>
             </Box>

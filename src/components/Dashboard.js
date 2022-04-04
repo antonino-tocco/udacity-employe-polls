@@ -2,10 +2,15 @@ import * as React from 'react';
 
 import {connect} from 'react-redux';
 import {useNavigate} from 'react-router';
-import {Card, CardHeader, Container, Grid} from '@mui/material';
+import {Box, Button, Card, CardHeader, Container, Grid, Switch} from '@mui/material';
 
 import {handleRetrieveQuestions} from '../actions/questions';
 import QuestionCard from './elements/QuestionCard';
+
+const questionTypes = {
+    ANSWERED: 'answered',
+    NOT_ANSWERED: 'not_answered'
+}
 
 const Dashboard = ({
     authedUser,
@@ -16,9 +21,15 @@ const Dashboard = ({
 
     const navigate = useNavigate();
 
+    const [selectedQuestionsType, setSelectedQuestionsType] = React.useState(questionTypes.ANSWERED);
+
     React.useEffect(() => {
         handleRetrieveQuestions();
     }, [authedUser]);
+
+    const _toggleQuestionsType = () => {
+        setSelectedQuestionsType(selectedQuestionsType === questionTypes.ANSWERED ? questionTypes.NOT_ANSWERED : questionTypes.ANSWERED)
+    }
 
 
     const unansweredQuestions = (Object.keys(questions ?? []))
@@ -28,26 +39,38 @@ const Dashboard = ({
 
     return (<Container>
         <h2>Dashboard</h2>
-        <h3>New Questions</h3>
-        <Grid container spacing={2}>
-            {unansweredQuestions.map((item) => (
-                <Grid key={item.id}  item xs={4}>
-                    <QuestionCard
-                        navigate={navigate}
-                        question={item}/>
+
+        <Box>
+            Change showed questions
+            <Switch onChange={(event) => _toggleQuestionsType()}/>
+        </Box>
+        {selectedQuestionsType === questionTypes?.ANSWERED ?
+            <Box>
+                <h3>Done</h3>
+                <Grid container spacing={2}>
+                    {answeredQuestions.map((item) => (
+                        <Grid key={item.id} item xs={4}>
+                            <QuestionCard
+                                navigate={navigate}
+                                question={item}/>
+                        </Grid>
+                    ))}
                 </Grid>
-            ))}
-        </Grid>
-        <h3>Done</h3>
-        <Grid container spacing={2}>
-            {answeredQuestions.map((item) => (
-                <Grid key={item.id} item xs={4}>
-                    <QuestionCard
-                        navigate={navigate}
-                        question={item}/>
+            </Box> :
+            <Box>
+                <h3>New Questions</h3>
+                <Grid container spacing={2}>
+                    {unansweredQuestions.map((item) => (
+                        <Grid key={item.id} item xs={4}>
+                            <QuestionCard
+                                navigate={navigate}
+                                question={item}/>
+                        </Grid>
+                    ))}
                 </Grid>
-            ))}
-        </Grid>
+            </Box>
+        }
+
     </Container>);
 }
 

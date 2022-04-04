@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
-import {useParams} from 'react-router';
+import {connect} from 'react-redux';
+import {useLocation, useParams, Navigate} from 'react-router';
 
-import {Container, Grid, Typography, Button, Box, styled} from '@mui/material';
+
+import {Container, Grid, Typography, Button, Box, styled, Alert} from '@mui/material';
 import {handleRetrieveQuestionDetail} from '../actions/questions';
 import {handleSaveQuestionAnswer} from "../actions/answers";
 
@@ -16,13 +17,45 @@ const PaddedBox = styled(Box)({
     padding: '20px'
 });
 
-const QuestionDetail = ({authedUser, question, savedQuestionAnswer, handleRetrieveQuestionDetail, handleSaveQuestionAnswer}) => {
+const QuestionDetail = ({
+                            authedUser,
+                            question,
+                            savedQuestionAnswer,
+                            saveQuestionAnswerError,
+                            handleRetrieveQuestionDetail,
+                            handleSaveQuestionAnswer
+                        }) => {
 
     const params = useParams();
+    const {state: {fromNav} = {}} = useLocation();
+    const [showSuccess, setShowSuccess] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState(null);
 
     const _saveQuestionAnswer = (option) => {
         handleSaveQuestionAnswer(authedUser?.id, question?.id, option);
     }
+
+
+    React.useEffect(() => {
+        if (!!savedQuestionAnswer) {
+            const qid = savedQuestionAnswer.split('-')[0];
+            if (qid === question?.id) {
+                setShowSuccess(true);
+                setTimeout(() => {
+                    setShowSuccess(false);
+                }, 5000);
+            }
+        }
+    }, [savedQuestionAnswer]);
+
+    React.useEffect(() => {
+        if (!!saveQuestionAnswerError) {
+            setErrorMessage(saveQuestionAnswerError);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 5000);
+        }
+    }, [saveQuestionAnswerError]);
 
     const _renderButton = (option, optionValue) => {
         const isQuestionAnswered = !!authedUser?.answers[question?.id];
@@ -31,7 +64,7 @@ const QuestionDetail = ({authedUser, question, savedQuestionAnswer, handleRetrie
                 variant='outlined'
                 onClick={() => _saveQuestionAnswer(optionValue)}>
                 {option?.text}
-            </SelectedButton>:
+            </SelectedButton> :
             <Button
                 disabled={isQuestionAnswered}
                 variant='outlined'
@@ -55,48 +88,58 @@ const QuestionDetail = ({authedUser, question, savedQuestionAnswer, handleRetrie
         }
     }, [savedQuestionAnswer]);
 
-    return (<Container>
-        <PaddedBox>
-            <Typography textAlign='center'>
-                {question?.authorDetail?.name}
-            </Typography>
-        </PaddedBox>
-        {!!question?.authorDetail?.avatarURL ?
-            <PaddedBox sx={{display: 'flex', flexDirection: 'horizontal', justifyContent: 'center'}}>
-                <img src={question?.authorDetail?.avatarURL}/>
-            </PaddedBox> : null
-        }
-        <PaddedBox>
-            <Typography textAlign='center'>
-                Would You Rather
-            </Typography>
-        </PaddedBox>
-        <PaddedBox>
-            <Grid container>
-                <Grid item xs={6} sx={{textAlign: 'center'}}>
-                    {
-                        _renderButton(question?.optionOne, 'optionOne')
-                    }
+    return (!fromNav ? <Navigate to='/404'/> :
+        <Container>
+            <PaddedBox>
+                <Typography textAlign='center'>
+                    {question?.authorDetail?.name}
+                </Typography>
+            </PaddedBox>
+            {!!question?.authorDetail?.avatarURL ?
+                <PaddedBox sx={{display: 'flex', flexDirection: 'horizontal', justifyContent: 'center'}}>
+                    <img src={question?.authorDetail?.avatarURL} style={{maxWidth: 200}}/>
+                </PaddedBox> : null
+            }
+            <PaddedBox>
+                <Typography textAlign='center'>
+                    Would You Rather
+                </Typography>
+            </PaddedBox>
+            <PaddedBox>
+                <Grid container>
+                    <Grid item xs={6} sx={{textAlign: 'center'}}>
+                        {
+                            _renderButton(question?.optionOne, 'optionOne')
+                        }
+                    </Grid>
+                    <Grid item xs={6} sx={{textAlign: 'center'}}>
+                        {
+                            _renderButton(question?.optionTwo, 'optionTwo')
+                        }
+                    </Grid>
                 </Grid>
-                <Grid item xs={6} sx={{textAlign: 'center'}}>
-                    {
-                        _renderButton(question?.optionTwo, 'optionTwo')
-                    }
-                </Grid>
-            </Grid>
-        </PaddedBox>
-    </Container>);
+            </PaddedBox>
+            <PaddedBox>
+                {showSuccess ?
+                    <Alert severity="success">Answer saved successfully!</Alert> : null
+                }
+                {errorMessage ?
+                    <Alert severity="error">{errorMessage}</Alert> : null
+                }
+            </PaddedBox>
+        </Container>);
 }
 
 const mapStateToProps = ({questions, auth, answers}) => ({
     question: questions.selectedQuestion,
     authedUser: auth.authedUser ?? null,
-    savedQuestionAnswer: answers.savedQuestionAnswer ?? null
+    savedQuestionAnswer: answers.savedQuestionAnswer ?? null,
+    saveQuestionAnswerError: answers?.saveQuestionAnswerError
 });
 
 const mapDispatchToProps = (dispatch) => ({
     handleRetrieveQuestionDetail: async (id) => dispatch(await handleRetrieveQuestionDetail(id)),
-    handleSaveQuestionAnswer: async(authedUser, qid, answer) => dispatch(await handleSaveQuestionAnswer({
+    handleSaveQuestionAnswer: async (authedUser, qid, answer) => dispatch(await handleSaveQuestionAnswer({
         authedUser,
         qid,
         answer

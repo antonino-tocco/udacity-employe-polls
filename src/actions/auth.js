@@ -56,8 +56,6 @@ export async function handleLoginUser(id, password) {
                 dispatch(userLoginFailed());
                 return;
             }
-            const avatarURL = `https://www.gravatar.com/avatar/${md5(JSON.stringify(user))}`;
-            user.avatarURL = avatarURL;
             dispatch(setCurrentUser(user));
         } catch (exception) {
             dispatch(userLoginFailed(exception));

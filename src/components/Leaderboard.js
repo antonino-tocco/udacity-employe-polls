@@ -27,7 +27,7 @@ const Leaderboard = ({users, savedQuestion, savedQuestionAnswer, retrieveAllUser
 
     const columns = [{
         name: 'id',
-        label: 'author',
+        label: 'Author',
         options: {
             sort: false,
             customBodyRenderLite: (dataIndex, rowIndex) => {
@@ -47,10 +47,10 @@ const Leaderboard = ({users, savedQuestion, savedQuestionAnswer, retrieveAllUser
         }
     }, {
         name: 'answeredQuestions',
-        label: 'answered questions'
+        label: 'Answered questions'
     }, {
         name: 'askedQuestions',
-        label: 'asked questions'
+        label: 'Asked questions'
     }];
 
     const options = {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {connect} from 'react-redux';
-import {Box, Button, Container, FormGroup, styled, TextField, Typography} from '@mui/material';
+import {Alert, Box, Button, Container, FormGroup, styled, TextField, Typography} from '@mui/material';
 
 import {handleSaveQuestion} from '../actions/questions';
 
@@ -17,18 +17,38 @@ const PaddedBox = styled(Box)({
     padding: 40
 });
 
-const QuestionCreation = ({authedUser, handleSaveQuestion}) => {
+const QuestionCreation = ({authedUser, savedQuestion, saveQuestionError, handleSaveQuestion}) => {
 
     const optionOneRef = React.useRef();
     const optionTwoRef = React.useRef();
 
-    const [optionOneError, setOptionOneError] = React.useState(false);
-    const [optionTwoError, setOptionTwoError] = React.useState(false);
+    const [optionOne, setOptionOne] = React.useState('');
+    const [optionTwo, setOptionTwo] = React.useState('');
+
+    const [disabledSubmit, setDisabledSubmit] = React.useState(true);
+    const [showSuccess, setShowSuccess] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState(null);
+
+    React.useEffect(() => {
+        if (!!savedQuestion) {
+            setShowSuccess(true)
+            setTimeout(() => {
+                setShowSuccess(false);
+            }, 5000);
+        }
+    }, [savedQuestion]);
+
+    React.useEffect(() => {
+        if (!!saveQuestionError) {
+            setErrorMessage(saveQuestionError);
+            setTimeout(() => {
+                setErrorMessage(null);
+            }, 5000);
+        }
+    }, [saveQuestionError]);
 
     const _handleSaveQuestion = () => {
-        const optionOne = optionOneRef?.current?.textContent;
-        const optionTwo = optionTwoRef?.current?.textContent;
-        if (!!optionOne && !!optionTwo) {
+        if (!evaluateFieldError(optionOne) && !evaluateFieldError(optionTwo)) {
             handleSaveQuestion({
                 optionOneText: optionOne,
                 optionTwoText: optionTwo,
@@ -38,15 +58,25 @@ const QuestionCreation = ({authedUser, handleSaveQuestion}) => {
     }
 
     const handleChangeOptionOne = (event) => {
-        const optionOne = event.target.value;
-        const hasError = !optionOne || optionOne?.trim()?.length === 0;
-        setOptionOneError(hasError);
+        const optionOneValue = event.target.value;
+        setOptionOne(optionOneValue)
+        setDisabledSubmit(evaluateDisabledSubmit(optionOneValue, optionTwo));
     }
 
     const handleChangeOptionTwo = (event) => {
-        const optionTwo = event.target.value;
-        const hasError = !optionTwo || optionTwo?.trim()?.length === 0;
-        setOptionTwoError(hasError);
+        const optionTwoValue = event.target.value;
+        setOptionTwo(optionTwoValue);
+        setDisabledSubmit(evaluateDisabledSubmit(optionOne, optionTwoValue));
+    }
+
+    const evaluateFieldError = (value) => {
+        const hasError = !value || value.trim().length === 0;
+        return hasError;
+    }
+
+    const evaluateDisabledSubmit = (optionOne, optionTwo) => {
+        const enabled = !evaluateFieldError(optionOne) && !evaluateFieldError(optionTwo);
+        return !enabled;
     }
 
     return <Container>
@@ -63,34 +93,54 @@ const QuestionCreation = ({authedUser, handleSaveQuestion}) => {
         <PaddedBox>
             <FormGroup>
                 <TextField
+                    inputProps={{
+                        'data-testid': 'option-one'
+                    }}
                     ref={optionOneRef}
-                    helperText='Option One'
+                    label='Option One'
+                    helperText='Insert not empty value'
                     variant='standard'
                     name='optionOne'
                     onChange={handleChangeOptionOne}
-                    error={optionOneError}
+                    error={evaluateFieldError(optionOne)}
                 />
             </FormGroup>
             <FormGroup>
                 <TextField
+                    inputProps={{
+                        'data-testid': 'option-two'
+                    }}
                     ref={optionTwoRef}
-                    helperText='Option Two'
+                    label='Option Two'
+                    helperText='Insert not empty value'
                     variant='standard'
                     name='optionTwo'
                     onChange={handleChangeOptionTwo}
-                    error={optionTwoError}/>
+                    error={evaluateFieldError(optionTwo)}/>
             </FormGroup>
         </PaddedBox>
-        <Box sx={{display: 'flex', flexDirection: 'horizontal', flexGrow: 1, justifyContent: 'center'}}>
-            <Button variant='text'
-                    disabled={optionOneError || optionTwoError}
-                    onClick={() => _handleSaveQuestion()}>Submit</Button>
-        </Box>
+        <PaddedBox>
+            {showSuccess ?
+                <Alert data-testid='success-alert' severity="success">Question saved successfully!</Alert> : null
+            }
+            {!!errorMessage ?
+                <Alert data-testid='error-alert' severity="error">{errorMessage}</Alert> : null
+            }
+        </PaddedBox>
+        <PaddedBox sx={{display: 'flex', flexDirection: 'horizontal', flexGrow: 1, justifyContent: 'center'}}>
+            <Button
+                data-testid='submit'
+                variant='outlined'
+                disabled={disabledSubmit}
+                onClick={() => _handleSaveQuestion()}>Submit</Button>
+        </PaddedBox>
     </Container>;
 };
 
-const mapStateToProps = ({auth}) => ({
-    authedUser: auth?.authedUser ?? null
+const mapStateToProps = ({auth, questions}) => ({
+    authedUser: auth?.authedUser ?? null,
+    savedQuestion: questions?.savedQuestion,
+    saveQuestionError: questions?.saveQuestionError
 });
 
 const mapDispatchToProps = (dispatch) => ({

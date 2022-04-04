@@ -65,6 +65,9 @@ export async function saveQuestion(question) {
     try {
         return await _saveQuestion(question);
     } catch (exception) {
+        if (exception === "Please provide optionOneText, optionTwoText, and author") {
+            throw new ApiError(errors.QUESTION_BAD_FORMATTED, "Please provide optionOneText, optionTwoText, and author");
+        }
         throw exception;
     }
 }
@@ -73,6 +76,9 @@ export async function saveQuestionAnswer({authedUser, qid, answer}) {
     try {
         return await _saveQuestionAnswer({authedUser, qid, answer});
     } catch (exception) {
+        if (exception === "Please provide authedUser, qid, and answer") {
+            throw new ApiError(errors.ANSWER_BAD_FORMATTED);
+        }
         throw exception;
     }
 }

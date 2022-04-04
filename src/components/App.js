@@ -15,6 +15,7 @@ import Leaderboard from './Leaderboard';
 import QuestionDetail from './QuestionDetail';
 import QuestionCreation from './QuestionCreation';
 import {SAVE_QUESTION_ANSWER} from "../actions/answers";
+import NotFound from "./NotFound";
 
 
 const routes = [{
@@ -32,7 +33,7 @@ const routes = [{
     showInMenu: true,
     builder: (props) => <Leaderboard {...props} />
 }, {
-    key: 'questions',
+    key: 'question',
     label: 'Question',
     path: '/questions/:question_id',
     private: true,
@@ -52,6 +53,13 @@ const routes = [{
     private: false,
     showInMenu: false,
     builder: (props) => <Login {...props} />
+}, {
+    key: 'not_found',
+    label: 'Not found',
+    path: '/404',
+    private: false,
+    showInMenu: false,
+    builder: (props) => <NotFound {...props}/>
 }]
 
 const App = ({

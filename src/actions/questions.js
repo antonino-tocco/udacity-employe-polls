@@ -66,7 +66,9 @@ export async function handleSaveQuestion(question) {
             });
         } catch (exception) {
             dispatch({
-               type: SAVE_QUESTION_ERROR,
+                type: SAVE_QUESTION_ERROR,
+                savedQuestion: null,
+                saveQuestionError: exception.message
             });
         }
     }
