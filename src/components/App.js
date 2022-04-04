@@ -17,6 +17,16 @@ import QuestionCreation from './QuestionCreation';
 
 import NotFound from "./NotFound";
 
+import pollIcon from '../assets/images/polling.png';
+import styled from "styled-components";
+
+const WelcomeIcon = styled.img({
+    width: 200,
+    height: 200,
+    display: 'block',
+    margin: '0 auto'
+})
+
 
 const routes = [{
     key: 'dashboard',
@@ -113,7 +123,8 @@ const App = ({
                     )}
                 </Routes>
             </Router> :
-                <Box sx={{ display: 'flex', width: '100vw', height: '100vh', flexDirection: 'horizontal', justifyContent: 'center', alignContent: 'center' }}>
+                <Box sx={{ display: 'flex', height: '100vh', flexGrow: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                    <WelcomeIcon src={pollIcon}/>
                     <CircularProgress />
                 </Box>}
         </ThemeProvider>
