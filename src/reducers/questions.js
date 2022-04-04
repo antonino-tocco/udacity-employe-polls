@@ -1,4 +1,10 @@
-import {SAVE_QUESTION_ERROR, SAVED_QUESTION, SET_QUESTIONS, SET_SELECTED_QUESTION} from '../actions/questions';
+import {
+    SAVE_QUESTION_ERROR,
+    SAVED_QUESTION,
+    SET_NAVIGATION_SELECTED_QUESTION,
+    SET_QUESTIONS,
+    SET_SELECTED_QUESTION
+} from '../actions/questions';
 
 export default function questions(state = {}, action) {
     switch (action.type) {
@@ -10,6 +16,10 @@ export default function questions(state = {}, action) {
         case SET_SELECTED_QUESTION:
             return {
                 selectedQuestion: action.question
+            }
+        case SET_NAVIGATION_SELECTED_QUESTION:
+            return {
+                navigationSelectedQuestion: action.question
             }
         case SAVED_QUESTION:
             return {

@@ -2,6 +2,7 @@ import {retrieveQuestion, retrieveQuestions, retrieveUser, saveQuestion, saveQue
 
 export const SET_QUESTIONS = "SET_QUESTIONS";
 export const SET_SELECTED_QUESTION = "SET_SELECTED_QUESTION";
+export const SET_NAVIGATION_SELECTED_QUESTION = "SET_NAVIGATION_SELECTED_QUESTION"
 export const SAVED_QUESTION = "SAVED_QUESTION";
 export const SAVE_QUESTION_ERROR = "SAVE_QUESTION_ERROR";
 
@@ -17,6 +18,13 @@ export function setQuestions({questions, answeredQuestionIds}) {
 export function setSelectedQuestion({question}) {
     return {
         type: SET_SELECTED_QUESTION,
+        question
+    }
+}
+
+export function setNavigationSelectedQuestion({question}) {
+    return {
+        type: SET_NAVIGATION_SELECTED_QUESTION,
         question
     }
 }
@@ -74,3 +82,10 @@ export async function handleSaveQuestion(question) {
     }
 }
 
+export function handleGoToQuestionDetail(question) {
+    return (dispatch) => {
+        dispatch(setNavigationSelectedQuestion({
+            question
+        }))
+    }
+}

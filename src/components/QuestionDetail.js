@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import {connect} from 'react-redux';
-import {useLocation, useParams, Navigate} from 'react-router';
+import {useLocation, useParams, Navigate, useNavigate} from 'react-router';
 
 
 import {Container, Grid, Typography, Button, Box, styled, Alert} from '@mui/material';
@@ -24,6 +24,7 @@ const PaddedBox = styled(Box)({
 const QuestionDetail = ({
                             authedUser,
                             question,
+                            navigationSelectedQuestion,
                             savedQuestionAnswer,
                             saveQuestionAnswerError,
                             handleRetrieveQuestionDetail,
@@ -31,7 +32,8 @@ const QuestionDetail = ({
                         }) => {
 
     const params = useParams();
-    const {state: {fromNav} = {}} = useLocation();
+    const navigate = useNavigate();
+
     const [showSuccess, setShowSuccess] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(null);
 
@@ -79,7 +81,11 @@ const QuestionDetail = ({
 
     React.useEffect(() => {
         const id = params.question_id;
-        handleRetrieveQuestionDetail(id);
+        if (id === navigationSelectedQuestion?.id) {
+            handleRetrieveQuestionDetail(id);
+        } else {
+            navigate('/404', {replace: true});
+        }
     }, []);
 
     React.useEffect(() => {
@@ -92,7 +98,7 @@ const QuestionDetail = ({
         }
     }, [savedQuestionAnswer]);
 
-    return (!fromNav ? <Navigate to='/404'/> :
+    return (
         <Container>
             <PaddedBox>
                 <Typography textAlign='center'>
@@ -136,6 +142,7 @@ const QuestionDetail = ({
 
 const mapStateToProps = ({questions, auth, answers}) => ({
     question: questions.selectedQuestion,
+    navigationSelectedQuestion: questions.navigationSelectedQuestion,
     authedUser: auth.authedUser ?? null,
     savedQuestionAnswer: answers.savedQuestionAnswer ?? null,
     saveQuestionAnswerError: answers?.saveQuestionAnswerError

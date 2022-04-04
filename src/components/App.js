@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {Container, ThemeProvider} from '@mui/material';
+import {Box, CircularProgress, Container, ThemeProvider} from '@mui/material';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router';
 import {retrieveAuthedUser} from '../actions/auth';
@@ -112,7 +112,10 @@ const App = ({
                         )
                     )}
                 </Routes>
-            </Router> : null}
+            </Router> :
+                <Box sx={{ display: 'flex', width: '100vw', height: '100vh', flexDirection: 'horizontal', justifyContent: 'center', alignContent: 'center' }}>
+                    <CircularProgress />
+                </Box>}
         </ThemeProvider>
     );
 }

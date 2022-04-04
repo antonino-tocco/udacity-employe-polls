@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {useNavigate} from 'react-router';
 import {Box, Button, Card, CardHeader, Container, Grid, Switch} from '@mui/material';
 
-import {handleRetrieveQuestions} from '../actions/questions';
+import {handleRetrieveQuestions, handleGoToQuestionDetail} from '../actions/questions';
 import QuestionCard from './elements/QuestionCard';
 
 const questionTypes = {
@@ -16,7 +16,8 @@ const Dashboard = ({
     authedUser,
     questions,
     answeredQuestionIds,
-    handleRetrieveQuestions
+    handleRetrieveQuestions,
+    handleGoToQuestionDetail,
 }) => {
 
     const navigate = useNavigate();
@@ -29,6 +30,11 @@ const Dashboard = ({
 
     const _toggleQuestionsType = () => {
         setSelectedQuestionsType(selectedQuestionsType === questionTypes.ANSWERED ? questionTypes.NOT_ANSWERED : questionTypes.ANSWERED)
+    }
+
+    const goToQuestionDetail = (question) => {
+        handleGoToQuestionDetail(question);
+        navigate(`questions/${question.id}`);
     }
 
 
@@ -51,7 +57,7 @@ const Dashboard = ({
                     {answeredQuestions.map((item) => (
                         <Grid key={item.id} item xs={4}>
                             <QuestionCard
-                                navigate={navigate}
+                                goToDetail={goToQuestionDetail}
                                 question={item}/>
                         </Grid>
                     ))}
@@ -63,7 +69,7 @@ const Dashboard = ({
                     {unansweredQuestions.map((item) => (
                         <Grid key={item.id} item xs={4}>
                             <QuestionCard
-                                navigate={navigate}
+                                goToDetail={goToQuestionDetail}
                                 question={item}/>
                         </Grid>
                     ))}
@@ -83,7 +89,8 @@ const mapStateToProps = ({auth, questions}) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    handleRetrieveQuestions: async () => dispatch(await handleRetrieveQuestions())
+    handleRetrieveQuestions: async () => dispatch(await handleRetrieveQuestions()),
+    handleGoToQuestionDetail: (question) => dispatch(handleGoToQuestionDetail(question))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

@@ -1,17 +1,12 @@
 import {Box, Button, Card, CardActions, CardContent, CardHeader} from "@mui/material";
-import {useNavigate} from 'react-router';
 import {DateTime} from 'luxon';
 
-const QuestionCard = ({question, navigate}) => {
+const QuestionCard = ({question, goToDetail}) => {
 
 
     const goToQuestionDetail = () => {
         console.log(`Go to question detail`);
-        navigate(`/questions/${question.id}`, {
-            state: {
-                fromNav: true
-            }
-        });
+        goToDetail(question);
     }
 
 
