@@ -9,8 +9,12 @@ import {handleRetrieveQuestionDetail} from '../actions/questions';
 import {handleSaveQuestionAnswer} from "../actions/answers";
 
 const SelectedButton = styled(Button)({
-    background: '#000',
-    color: '#fff'
+    background: '#1976d2',
+    color: '#fff',
+    '&:hover': {
+        background: '#fff',
+        color: '#1976d2'
+    }
 });
 
 const PaddedBox = styled(Box)({

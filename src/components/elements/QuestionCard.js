@@ -7,7 +7,11 @@ const QuestionCard = ({question, navigate}) => {
 
     const goToQuestionDetail = () => {
         console.log(`Go to question detail`);
-        navigate(`/questions/${question.id}`);
+        navigate(`/questions/${question.id}`, {
+            state: {
+                fromNav: true
+            }
+        });
     }
 
 

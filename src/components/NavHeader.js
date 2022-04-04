@@ -53,13 +53,7 @@ const NavHeader = ({isUserLogged, authedUser, pages, handleLogout}) => {
     }
 
     const navigateToPage = (page) => {
-        if (page.key === 'question') {
-            navigate(page?.path, {state: {
-                fromNav: true
-            }});
-        } else {
-            navigate(page?.path);
-        }
+        navigate(page?.path);
         handleCloseNavMenu();
     }
 

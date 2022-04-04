@@ -2,6 +2,7 @@ import md5 from 'crypto-js/md5';
 import {retrieveUsers} from '../utils/api';
 import storage from '../utils/storage';
 
+export const SET_AUTH_LOADING = 'SET_AUTH_LOADING';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const USER_LOGIN_FAILED = 'USER_LOGIN_FAILED';
 
@@ -14,19 +15,27 @@ export function setCurrentUser(user) {
 
     return {
         type: SET_CURRENT_USER,
-        user: toStoreUser
+        user: toStoreUser,
+    }
+}
+
+export function setAuthLoading(value) {
+    return {
+        type: SET_AUTH_LOADING,
+        loading: value
     }
 }
 
 export function userLoginFailed(reason) {
     return {
         type: USER_LOGIN_FAILED,
-        reason
+        reason,
     }
 }
 
 export async function retrieveAuthedUser() {
     return async (dispatch) => {
+        dispatch(setAuthLoading(true));
         const storedUser = JSON.parse(storage.getItem('user'));
         try {
             const users = await retrieveUsers();

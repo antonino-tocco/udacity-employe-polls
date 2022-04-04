@@ -14,7 +14,7 @@ import PrivateRoute from './PrivateRoute';
 import Leaderboard from './Leaderboard';
 import QuestionDetail from './QuestionDetail';
 import QuestionCreation from './QuestionCreation';
-import {SAVE_QUESTION_ANSWER} from "../actions/answers";
+
 import NotFound from "./NotFound";
 
 
@@ -65,15 +65,23 @@ const routes = [{
 const App = ({
     isUserLogged,
     authedUser,
+    authLoading,
     savedQuestion,
     savedQuestionAnswer,
     refreshAuthedUser,
 })  => {
 
+    const [loading, setLoading] = React.useState(true);
+
     React.useEffect(() => {
         refreshAuthedUser();
     }, []);
 
+    React.useEffect(() => {
+        if (!authLoading) {
+            setLoading(false);
+        }
+    }, [authLoading]);
 
     React.useEffect(() => {
         if (!!savedQuestionAnswer || !!savedQuestion) {
@@ -83,6 +91,7 @@ const App = ({
 
     return (
         <ThemeProvider theme={theme}>
+            {!loading ?
             <Router>
                 <NavHeader
                     isUserLogged={isUserLogged} authedUser={authedUser}
@@ -103,7 +112,7 @@ const App = ({
                         )
                     )}
                 </Routes>
-            </Router>
+            </Router> : null}
         </ThemeProvider>
     );
 }
@@ -111,6 +120,7 @@ const App = ({
 const mapStateToProps = ({auth, questions, answers}) => ({
     isUserLogged: !!auth?.authedUser,
     authedUser: auth?.authedUser,
+    authLoading: auth?.loading ?? true,
     savedQuestion: questions.savedQuestion,
     savedQuestionAnswer: answers.savedQuestionAnswer
 })
