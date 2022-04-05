@@ -127,7 +127,7 @@ const QuestionCreation = ({authedUser, savedQuestion, saveQuestionError, handleS
                 <Alert data-testid='error-alert' severity="error">{errorMessage}</Alert> : null
             }
         </PaddedBox>
-        <PaddedBox sx={{display: 'flex', flexDirection: 'horizontal', flexGrow: 1, justifyContent: 'center'}}>
+        <PaddedBox sx={{display: 'flex', flexDirection: 'row', flexGrow: 1, justifyContent: 'center'}}>
             <Button
                 data-testid='submit'
                 variant='outlined'

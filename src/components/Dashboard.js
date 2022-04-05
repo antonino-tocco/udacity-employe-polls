@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import {connect} from 'react-redux';
 import {useNavigate} from 'react-router';
-import {Box, Button, Card, CardHeader, Container, Grid, Switch} from '@mui/material';
+import {Box, Container, Grid, Switch} from '@mui/material';
 
 import {handleRetrieveQuestions, handleGoToQuestionDetail} from '../actions/questions';
 import QuestionCard from './elements/QuestionCard';
@@ -22,10 +22,12 @@ const Dashboard = ({
 
     const navigate = useNavigate();
 
-    const [selectedQuestionsType, setSelectedQuestionsType] = React.useState(questionTypes.ANSWERED);
+    const [selectedQuestionsType, setSelectedQuestionsType] = React.useState(questionTypes.NOT_ANSWERED);
+
 
     React.useEffect(() => {
         handleRetrieveQuestions();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authedUser]);
 
     const _toggleQuestionsType = () => {

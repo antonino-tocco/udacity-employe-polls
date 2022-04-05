@@ -16,7 +16,7 @@ const QuestionCard = ({question, goToDetail}) => {
             <span>{DateTime.fromMillis(question?.timestamp).toFormat('dd-MM-yyyy | HH:mm:ss')}</span><br />
         </CardContent>
         <CardActions>
-            <Box sx={{display: 'flex', flexGrow: 1, flexDirection: 'horizontal', justifyContent: 'center'}}>
+            <Box sx={{display: 'flex', flexGrow: 1, flexDirection: 'row', justifyContent: 'center'}}>
                 <Button sx={{width: '100%'}} variant='outlined' onClick={goToQuestionDetail}>SHOW</Button>
             </Box>
         </CardActions>

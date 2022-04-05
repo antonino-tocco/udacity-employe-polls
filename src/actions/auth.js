@@ -11,7 +11,11 @@ export function setCurrentUser(user) {
     if (!!toStoreUser) {
         delete toStoreUser['password'];
     }
-    storage.setItem('user', JSON.stringify(toStoreUser));
+    if (!toStoreUser) {
+        storage.removeItem('user');
+    } else {
+        storage.setItem('user', JSON.stringify(toStoreUser));
+    }
 
     return {
         type: SET_CURRENT_USER,
@@ -36,7 +40,8 @@ export function userLoginFailed(reason) {
 export async function retrieveAuthedUser() {
     return async (dispatch) => {
         dispatch(setAuthLoading(true));
-        const storedUser = JSON.parse(storage.getItem('user'));
+        const jsonItem = storage.getItem('user');
+        const storedUser = !!jsonItem ? JSON.parse(storage.getItem('user')) : null;
         try {
             const users = await retrieveUsers();
             const user = users[storedUser?.id];

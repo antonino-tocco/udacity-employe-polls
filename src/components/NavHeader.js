@@ -5,7 +5,6 @@ import {
     AppBar, Avatar,
     Box,
     Button,
-    Container,
     IconButton,
     Menu,
     MenuItem,
@@ -41,15 +40,12 @@ const NavHeader = ({isUserLogged, authedUser, pages, handleLogout}) => {
     }
 
     const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    }
-
-    const handleCloseUserMenu = () => {
         setAnchorElUserNav(null);
     }
 
     const _handleLogout = () => {
         handleLogout();
+        handleCloseNavMenu();
     }
 
     const navigateToPage = (page) => {
@@ -102,7 +98,10 @@ const NavHeader = ({isUserLogged, authedUser, pages, handleLogout}) => {
                     </MenuButton>)
                 )}
             </Box>
-            <Box sx={{flexGrow: 0}}>
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <div style={{float: 'left'}}>
+                    <Typography>{authedUser?.id}</Typography>
+                </div>
                 <IconButton onClick={handleOpenUserMenu}>
                     <Avatar src={authedUser?.avatarURL}/>
                 </IconButton>

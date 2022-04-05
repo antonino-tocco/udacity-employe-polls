@@ -1,4 +1,4 @@
-import {retrieveQuestion, retrieveQuestions, retrieveUser, saveQuestion, saveQuestionAnswer} from '../utils/api';
+import {retrieveQuestion, retrieveQuestions, retrieveUser, saveQuestion} from '../utils/api';
 
 export const SET_QUESTIONS = "SET_QUESTIONS";
 export const SET_SELECTED_QUESTION = "SET_SELECTED_QUESTION";
@@ -33,7 +33,8 @@ export async function handleRetrieveQuestions() {
     return async (dispatch, getState) => {
         const { auth } = getState();
         const { authedUser } = auth;
-        const answeredQuestionIds = !!authedUser ? Object.keys(authedUser?.answers ?? []) : [];
+        const updatedUser = await retrieveUser(authedUser?.id);
+        const answeredQuestionIds = !!authedUser ? Object.keys(updatedUser?.answers ?? []) : [];
         try {
             const questions = await retrieveQuestions();
             dispatch(setQuestions({

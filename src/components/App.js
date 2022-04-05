@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {Box, CircularProgress, Container, ThemeProvider} from '@mui/material';
+import {Box, CircularProgress, ThemeProvider} from '@mui/material';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {Routes, Route} from 'react-router';
 import {retrieveAuthedUser} from '../actions/auth';
@@ -85,6 +85,7 @@ const App = ({
 
     React.useEffect(() => {
         refreshAuthedUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     React.useEffect(() => {
@@ -93,11 +94,6 @@ const App = ({
         }
     }, [authLoading]);
 
-    React.useEffect(() => {
-        if (!!savedQuestionAnswer || !!savedQuestion) {
-            refreshAuthedUser();
-        }
-    }, [savedQuestionAnswer, savedQuestion])
 
     return (
         <ThemeProvider theme={theme}>

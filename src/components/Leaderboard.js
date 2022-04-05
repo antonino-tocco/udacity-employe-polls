@@ -15,12 +15,14 @@ const Leaderboard = ({users, savedQuestion, savedQuestionAnswer, retrieveAllUser
 
     React.useEffect(() => {
         retrieveAllUsers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     React.useEffect(() => {
         if (!!savedQuestionAnswer || !!savedQuestion) {
             retrieveAllUsers();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [savedQuestionAnswer, savedQuestion])
 
     const sortedUsers = (users ?? []).sort((a, b) => (b.answeredQuestions + b.askedQuestions) - (a.answeredQuestions + a.answeredQuestions));
@@ -32,7 +34,7 @@ const Leaderboard = ({users, savedQuestion, savedQuestionAnswer, retrieveAllUser
             sort: false,
             customBodyRenderLite: (dataIndex, rowIndex) => {
                 const user = users[rowIndex];
-                return <Box sx={{display: 'flex', flexDirection: 'horizontal', alignItems: 'center'}}>
+                return <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
                     <Avatar src={user?.avatarURL}/>
                     <div style={{marginLeft: 10}}>
                         <Typography>
@@ -79,7 +81,7 @@ const mapStateToProps = ({users, questions, answers}) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    retrieveAllUsers: async () => dispatch(await retrieveAllUsers())
+    retrieveAllUsers: async () => dispatch(await retrieveAllUsers(true)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Leaderboard);
