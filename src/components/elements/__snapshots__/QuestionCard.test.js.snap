@@ -33,7 +33,7 @@ Object {
           class="MuiCardActions-root MuiCardActions-spacing css-1t6e9jv-MuiCardActions-root"
         >
           <div
-            class="MuiBox-root css-vtp28p"
+            class="MuiBox-root css-115x9ip"
           >
             <button
               class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-xsqe0f-MuiButtonBase-root-MuiButton-root"
@@ -79,7 +79,7 @@ Object {
         class="MuiCardActions-root MuiCardActions-spacing css-1t6e9jv-MuiCardActions-root"
       >
         <div
-          class="MuiBox-root css-vtp28p"
+          class="MuiBox-root css-115x9ip"
         >
           <button
             class="MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeMedium MuiButton-outlinedSizeMedium MuiButtonBase-root  css-xsqe0f-MuiButtonBase-root-MuiButton-root"
