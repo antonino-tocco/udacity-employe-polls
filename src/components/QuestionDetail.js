@@ -1,13 +1,14 @@
 import * as React from 'react';
 
 import {connect} from 'react-redux';
-import {useParams, useNavigate} from 'react-router';
+import {useParams} from 'react-router';
 
 
 import {Container, Grid, Typography, Button, Box, styled, Alert, CircularProgress} from '@mui/material';
 import {handleRetrieveQuestionDetail} from '../actions/questions';
 import {handleSaveQuestionAnswer} from "../actions/answers";
 import {retrieveAllUsers} from "../actions/users";
+import {handleLogout} from "../actions/auth";
 
 const SelectedButton = styled(Button)({
     background: '#1976d2',
@@ -31,13 +32,13 @@ const QuestionDetail = ({
                             selectedQuestionNotFound,
                             savedQuestionAnswer,
                             saveQuestionAnswerError,
+                            handleLogout,
                             handleRetrieveQuestionDetail,
                             handleSaveQuestionAnswer,
                             retrieveAllUsers
                         }) => {
 
     const params = useParams();
-    const navigate = useNavigate();
 
     const [loading, setLoading] = React.useState(true);
     const [showSuccess, setShowSuccess] = React.useState(false);
@@ -76,8 +77,10 @@ const QuestionDetail = ({
 
     React.useEffect(() => {
         if (!!selectedQuestionNotFound) {
-            setLoading(false);
-            navigate('/404');
+            //setLoading(false);
+            handleLogout({
+                redirectTo: '/404'
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedQuestionNotFound]);
@@ -93,6 +96,7 @@ const QuestionDetail = ({
         if (!!savedQuestionAnswer) {
             const qid = savedQuestionAnswer.split('-')[0];
             if (qid === question?.id) {
+                handleRetrieveQuestionDetail(qid);
                 setShowSuccess(true);
                 setTimeout(() => {
                     setShowSuccess(false);
@@ -110,6 +114,12 @@ const QuestionDetail = ({
             }, 5000);
         }
     }, [saveQuestionAnswerError]);
+
+    React.useEffect(() => {
+        const id = params.question_id;
+        handleRetrieveQuestionDetail(id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const _renderButton = (option, optionValue) => {
         const isQuestionAnswered = !!authedUser?.answers[question?.id];
@@ -136,22 +146,6 @@ const QuestionDetail = ({
             </Box>
     };
 
-    React.useEffect(() => {
-        const id = params.question_id;
-        handleRetrieveQuestionDetail(id);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    React.useEffect(() => {
-        const id = params.question_id;
-        if (!!savedQuestionAnswer) {
-            const qid = savedQuestionAnswer.split('-')[0];
-            if (qid === id) {
-                handleRetrieveQuestionDetail(id);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [savedQuestionAnswer]);
 
     return loading ?
 
@@ -222,6 +216,9 @@ const mapDispatchToProps = (dispatch) => ({
         authedUser,
         qid,
         answer
+    })),
+    handleLogout: async ({redirectTo}) => dispatch(await handleLogout({
+        redirectTo
     })),
     retrieveAllUsers: async (mapping) => dispatch(await retrieveAllUsers(mapping))
 });

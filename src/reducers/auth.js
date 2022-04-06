@@ -1,10 +1,16 @@
-import {SET_AUTH_LOADING, SET_CURRENT_USER, USER_LOGIN_FAILED} from "../actions/auth";
+import {SET_AUTH_LOADING, SET_CURRENT_USER, USER_LOGIN_FAILED, USER_LOGOUT} from "../actions/auth";
 
 export default function auth(state = {}, action) {
     switch (action.type) {
         case SET_CURRENT_USER:
             return {
                 authedUser: action.user,
+                loading: false,
+            }
+        case USER_LOGOUT:
+            return {
+                authedUser: null,
+                redirectTo: action.redirectTo,
                 loading: false
             }
         case USER_LOGIN_FAILED:

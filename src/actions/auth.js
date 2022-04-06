@@ -4,6 +4,7 @@ import storage from '../utils/storage';
 export const SET_AUTH_LOADING = 'SET_AUTH_LOADING';
 export const SET_CURRENT_USER = 'SET_CURRENT_USER';
 export const USER_LOGIN_FAILED = 'USER_LOGIN_FAILED';
+export const USER_LOGOUT = 'USER_LOGOUT';
 
 export function setCurrentUser(user) {
     const toStoreUser = user;
@@ -22,10 +23,24 @@ export function setCurrentUser(user) {
     }
 }
 
+export function logout({redirectTo}) {
+    return {
+        type: USER_LOGOUT,
+        redirectTo
+    }
+}
+
 export function setAuthLoading(value) {
     return {
         type: SET_AUTH_LOADING,
         loading: value
+    }
+}
+
+export function setLogout(redirectTo= null) {
+    return {
+        type: USER_LOGOUT,
+        redirectTo
     }
 }
 
@@ -43,8 +58,13 @@ export async function retrieveAuthedUser() {
         const storedUser = !!jsonItem ? JSON.parse(storage.getItem('user')) : null;
         try {
             const users = await retrieveUsers();
-            const user = users[storedUser?.id];
-            dispatch(setCurrentUser(user));
+            const user = users[storedUser?.id]
+            if (!!user) {
+                dispatch(setCurrentUser(user));
+            } else {
+                storage.removeItem('user');
+                dispatch(setLogout());
+            }
         } catch (exception) {
 
         }
@@ -76,11 +96,15 @@ export async function handleLoginUser(id, password) {
     }
 }
 
-export function handleLogout() {
+export function handleLogout({
+    redirectTo
+} = {
+    redirectTo: null
+}) {
     return (dispatch) => {
         try {
             storage.removeItem('user');
-            dispatch(setCurrentUser(null));
+            dispatch(setLogout(redirectTo))
         } catch (exception) {
 
         }

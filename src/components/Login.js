@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
 
-import {useNavigate} from 'react-router';
+import {useLocation, useNavigate} from 'react-router';
 
 import {
     Container,
@@ -28,6 +28,8 @@ const LoginIcon = styled.img({
 const Login = ({authedUser, allUsers, handleUserLogin, retrieveAllUsers}) => {
 
     const navigate = useNavigate();
+    const { state } = useLocation();
+    const redirectTo = state?.redirectTo ?? null;
     const [selectedUser, setSelectedUser] = React.useState('');
 
     const handleSubmit = () => {
@@ -53,7 +55,9 @@ const Login = ({authedUser, allUsers, handleUserLogin, retrieveAllUsers}) => {
 
     React.useEffect(() => {
         if (!!authedUser) {
-            navigate('/');
+            navigate(!!redirectTo ? redirectTo : '/', {
+                replace: true
+            });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [authedUser]);

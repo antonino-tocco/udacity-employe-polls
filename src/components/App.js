@@ -76,8 +76,6 @@ const App = ({
     isUserLogged,
     authedUser,
     authLoading,
-    savedQuestion,
-    savedQuestionAnswer,
     refreshAuthedUser,
 })  => {
 
