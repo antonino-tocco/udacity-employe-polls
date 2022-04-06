@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {useParams, useNavigate} from 'react-router';
 
 
-import {Container, Grid, Typography, Button, Box, styled, Alert} from '@mui/material';
+import {Container, Grid, Typography, Button, Box, styled, Alert, CircularProgress} from '@mui/material';
 import {handleRetrieveQuestionDetail} from '../actions/questions';
 import {handleSaveQuestionAnswer} from "../actions/answers";
 import {retrieveAllUsers} from "../actions/users";
@@ -24,20 +24,22 @@ const PaddedBox = styled(Box)({
 });
 
 const QuestionDetail = ({
-    authedUser,
-    question,
-    users,
-    navigationSelectedQuestion,
-    savedQuestionAnswer,
-    saveQuestionAnswerError,
-    handleRetrieveQuestionDetail,
-    handleSaveQuestionAnswer,
-    retrieveAllUsers
-}) => {
+                            authedUser,
+                            question,
+                            users,
+                            navigationSelectedQuestion,
+                            selectedQuestionNotFound,
+                            savedQuestionAnswer,
+                            saveQuestionAnswerError,
+                            handleRetrieveQuestionDetail,
+                            handleSaveQuestionAnswer,
+                            retrieveAllUsers
+                        }) => {
 
     const params = useParams();
     const navigate = useNavigate();
 
+    const [loading, setLoading] = React.useState(true);
     const [showSuccess, setShowSuccess] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(null);
 
@@ -73,6 +75,21 @@ const QuestionDetail = ({
     }, []);
 
     React.useEffect(() => {
+        if (!!selectedQuestionNotFound) {
+            setLoading(false);
+            navigate('/404');
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedQuestionNotFound]);
+
+
+    React.useEffect(() => {
+        if (!!question) {
+            setLoading(false);
+        }
+    }, [question]);
+
+    React.useEffect(() => {
         if (!!savedQuestionAnswer) {
             const qid = savedQuestionAnswer.split('-')[0];
             if (qid === question?.id) {
@@ -103,8 +120,8 @@ const QuestionDetail = ({
                     onClick={() => _saveQuestionAnswer(optionValue)}>
                     {option?.text}
                 </SelectedButton>
-                <br />
-                {  votesLabel(question, option) }
+                <br/>
+                {votesLabel(question, option)}
             </Box> :
             <Box>
                 <Button
@@ -114,18 +131,14 @@ const QuestionDetail = ({
                     onClick={() => _saveQuestionAnswer(optionValue)}>
                     {option?.text}
                 </Button>
-                <br />
-                {  votesLabel(question, option) }
+                <br/>
+                {votesLabel(question, option)}
             </Box>
     };
 
     React.useEffect(() => {
         const id = params.question_id;
-        if (id === navigationSelectedQuestion?.id) {
-            handleRetrieveQuestionDetail(id);
-        } else {
-            navigate('/404', {replace: true});
-        }
+        handleRetrieveQuestionDetail(id);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -140,7 +153,18 @@ const QuestionDetail = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [savedQuestionAnswer]);
 
-    return (
+    return loading ?
+
+        <Box sx={{
+            display: 'flex',
+            height: '100vh',
+            flexGrow: 1,
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
+            <CircularProgress/>
+        </Box> :
         <Container>
             <PaddedBox>
                 <Typography textAlign='center'>
@@ -179,13 +203,14 @@ const QuestionDetail = ({
                     <Alert severity="error">{errorMessage}</Alert> : null
                 }
             </PaddedBox>
-        </Container>);
+        </Container>
 }
 
 const mapStateToProps = ({users, questions, auth, answers}) => ({
     users: users.users ?? [],
     question: questions.selectedQuestion,
     navigationSelectedQuestion: questions.navigationSelectedQuestion,
+    selectedQuestionNotFound: questions?.selectedQuestionNotFound,
     authedUser: auth.authedUser ?? null,
     savedQuestionAnswer: answers.savedQuestionAnswer ?? null,
     saveQuestionAnswerError: answers?.saveQuestionAnswerError

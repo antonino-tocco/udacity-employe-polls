@@ -41,9 +41,11 @@ const Dashboard = ({
 
 
     const unansweredQuestions = (Object.keys(questions ?? []))
-        .filter((item) => !answeredQuestionIds?.includes(item))?.map(item => questions[item]);
+        .filter((item) => !answeredQuestionIds?.includes(item))?.map(item => questions[item])
+        .sort((x, y) => y.timestamp - x.timestamp);
     const answeredQuestions = (Object.keys(questions ?? []))
-        .filter((item) => answeredQuestionIds?.includes(item))?.map(item => questions[item]);
+        .filter((item) => answeredQuestionIds?.includes(item))?.map(item => questions[item])
+        .sort((x, y) => y.timestamp - x.timestamp);
 
     return (<Container>
         <h2>Dashboard</h2>

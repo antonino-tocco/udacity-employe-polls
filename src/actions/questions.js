@@ -2,7 +2,8 @@ import {retrieveQuestion, retrieveQuestions, retrieveUser, saveQuestion} from '.
 
 export const SET_QUESTIONS = "SET_QUESTIONS";
 export const SET_SELECTED_QUESTION = "SET_SELECTED_QUESTION";
-export const SET_NAVIGATION_SELECTED_QUESTION = "SET_NAVIGATION_SELECTED_QUESTION"
+export const SET_SELECTED_QUESTION_NOT_FOUND = "SET_SELECTED_QUESTION_NOT_FOUND";
+export const SET_NAVIGATION_SELECTED_QUESTION = "SET_NAVIGATION_SELECTED_QUESTION";
 export const SAVED_QUESTION = "SAVED_QUESTION";
 export const SAVE_QUESTION_ERROR = "SAVE_QUESTION_ERROR";
 
@@ -19,6 +20,12 @@ export function setSelectedQuestion({question}) {
     return {
         type: SET_SELECTED_QUESTION,
         question
+    }
+}
+
+export function setSelectedQuestionNotFound() {
+    return {
+        type: SET_SELECTED_QUESTION_NOT_FOUND
     }
 }
 
@@ -51,16 +58,18 @@ export async function handleRetrieveQuestionDetail(id) {
     return async (dispatch) => {
         try {
             const question = await retrieveQuestion(id);
-            const author = await retrieveUser(question.author);
-            if (!!author) {
-                delete author.password;
+            if (!!question) {
+                const author = await retrieveUser(question.author);
+                if (!!author) {
+                    delete author.password;
+                }
+                question.authorDetail = author;
+                dispatch(setSelectedQuestion({
+                    question
+                }));
             }
-            question.authorDetail = author;
-            dispatch(setSelectedQuestion({
-                question
-            }));
         } catch (exception) {
-
+            dispatch(setSelectedQuestionNotFound());
         }
     }
 }

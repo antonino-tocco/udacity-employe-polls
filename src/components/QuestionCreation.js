@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import {connect} from 'react-redux';
+import {Navigate} from "react-router";
 import {Alert, Box, Button, Container, FormGroup, styled, TextField, Typography} from '@mui/material';
 
 import {handleSaveQuestion} from '../actions/questions';
@@ -27,6 +28,7 @@ const QuestionCreation = ({authedUser, savedQuestion, saveQuestionError, handleS
 
     const [disabledSubmit, setDisabledSubmit] = React.useState(true);
     const [showSuccess, setShowSuccess] = React.useState(false);
+    const [redirectToHome, setRedirectToHome] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState(null);
 
     React.useEffect(() => {
@@ -34,8 +36,10 @@ const QuestionCreation = ({authedUser, savedQuestion, saveQuestionError, handleS
             setShowSuccess(true)
             setTimeout(() => {
                 setShowSuccess(false);
+                setRedirectToHome(true);
             }, 5000);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [savedQuestion]);
 
     React.useEffect(() => {
@@ -45,6 +49,7 @@ const QuestionCreation = ({authedUser, savedQuestion, saveQuestionError, handleS
                 setErrorMessage(null);
             }, 5000);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [saveQuestionError]);
 
     const _handleSaveQuestion = () => {
@@ -79,7 +84,7 @@ const QuestionCreation = ({authedUser, savedQuestion, saveQuestionError, handleS
         return !enabled;
     }
 
-    return <Container>
+    return (redirectToHome ? <Navigate to='/' replace={true}/> : <Container>
         <PaddedBox>
             <TitleTypography textAlign='center' variant='h4'>
                 Would You Rather
@@ -134,7 +139,7 @@ const QuestionCreation = ({authedUser, savedQuestion, saveQuestionError, handleS
                 disabled={disabledSubmit}
                 onClick={() => _handleSaveQuestion()}>Submit</Button>
         </PaddedBox>
-    </Container>;
+    </Container>);
 };
 
 const mapStateToProps = ({auth, questions}) => ({

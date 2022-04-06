@@ -3,7 +3,7 @@ import {
     SAVED_QUESTION,
     SET_NAVIGATION_SELECTED_QUESTION,
     SET_QUESTIONS,
-    SET_SELECTED_QUESTION
+    SET_SELECTED_QUESTION, SET_SELECTED_QUESTION_NOT_FOUND
 } from '../actions/questions';
 
 export default function questions(state = {}, action) {
@@ -20,6 +20,10 @@ export default function questions(state = {}, action) {
         case SET_NAVIGATION_SELECTED_QUESTION:
             return {
                 navigationSelectedQuestion: action.question
+            }
+        case SET_SELECTED_QUESTION_NOT_FOUND:
+            return {
+                selectedQuestionNotFound: true
             }
         case SAVED_QUESTION:
             return {

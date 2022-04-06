@@ -25,7 +25,7 @@ const Leaderboard = ({users, savedQuestion, savedQuestionAnswer, retrieveAllUser
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [savedQuestionAnswer, savedQuestion])
 
-    const sortedUsers = (users ?? []).sort((a, b) => (b.answeredQuestions + b.askedQuestions) - (a.answeredQuestions + a.answeredQuestions));
+    const sortedUsers = (users ?? []).sort((a, b) => (b.answeredQuestions + b.askedQuestions) - (a.answeredQuestions + a.askedQuestions));
 
     const columns = [{
         name: 'id',
@@ -49,10 +49,17 @@ const Leaderboard = ({users, savedQuestion, savedQuestionAnswer, retrieveAllUser
         }
     }, {
         name: 'answeredQuestions',
-        label: 'Answered questions'
+        label: 'Answered questions',
+        options: {
+            sort: false
+        }
     }, {
         name: 'askedQuestions',
-        label: 'Asked questions'
+        label: 'Asked questions',
+        options: {
+            sort: false
+
+        }
     }];
 
     const options = {

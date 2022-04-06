@@ -1,17 +1,12 @@
 import * as React from 'react';
 
-import {connect} from 'react-redux';
-import {useNavigate} from 'react-router';
-import {Box, Button, Card, CardHeader, Container, Grid, Switch, Typography} from '@mui/material';
 
-import {handleRetrieveQuestions} from '../actions/questions';
-import QuestionCard from './elements/QuestionCard';
+import {Container, Typography} from '@mui/material';
 
-const NotFound = ({
 
-}) => {
+const NotFound = () => {
     return <Container>
-        <Typography textAlign='center'>Page not found</Typography>
+        <Typography textAlign='center'>Question not found</Typography>
     </Container>
 
 }

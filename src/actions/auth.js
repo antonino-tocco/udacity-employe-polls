@@ -1,4 +1,3 @@
-import md5 from 'crypto-js/md5';
 import {retrieveUsers} from '../utils/api';
 import storage from '../utils/storage';
 
