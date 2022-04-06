@@ -13,7 +13,10 @@ const QuestionCard = ({question, goToDetail}) => {
     return (<Card>
         <CardHeader title={question?.author} />
         <CardContent>
-            <span>{DateTime.fromMillis(question?.timestamp).toFormat('dd-MM-yyyy | HH:mm:ss')}</span><br />
+            <span>{DateTime.fromMillis(question?.timestamp)
+                .toLocal().toUTC()
+                .toFormat('dd-MM-yyyy | HH:mm:ss')}
+            </span><br />
         </CardContent>
         <CardActions>
             <Box sx={{display: 'flex', flexGrow: 1, flexDirection: 'row', justifyContent: 'center'}}>
